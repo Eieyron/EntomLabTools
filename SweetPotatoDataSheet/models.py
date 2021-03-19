@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 
 # STC - subject to change
 
-class SweetPotatoDataSheet(models.Model):
+class SweetPotatoDataSheetDescription(models.Model):
 
     species = models.CharField(max_length=50)
     location = models.CharField(max_length=50) # STC
@@ -14,6 +14,12 @@ class SweetPotatoDataSheet(models.Model):
     accession_no = models.CharField(max_length=50)
     plot_no = models.IntegerField()
     curator = models.CharField(max_length=255)
+
+class SweetPotatoDataSheet(models.Model):
+
+    description = models.ForeignKey(SweetPotatoDataSheetDescription, on_delete=models.CASCADE)
+
+    plant_no = models.IntegerField()
 
     # Plant Characteristics
     plant_growth_habit  = models.IntegerField() #3579
@@ -53,7 +59,7 @@ class SweetPotatoDataSheet(models.Model):
     distribution_of_secondary_flesh_color   = models.IntegerField() #0-9
     
     def __str__(self):
-        return 'SweetPotato | Species:{} | Accession:{} | Plot:{} '.format(self.species, self.accession_no, self.plot_no)
+        return 'SweetPotato No. {} '.format(self.plant_no)
 
 
 

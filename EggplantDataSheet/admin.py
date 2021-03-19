@@ -1,20 +1,26 @@
 from django.contrib import admin
-from .models import EggplantDataSheet
+from .models import EggplantDataSheet, EggplantDataSheetDescription
 
 class EggplantDataSheetAdmin(admin.ModelAdmin):
     
     '''descriptor class for the EggplantDataSheet Administration'''
 
-    list_filter = (
-        'rep_no',
+    list_display = [field.name for field in EggplantDataSheet._meta.get_fields()]
+
+
+class EggplantDataSheetDescriptionAdmin(admin.ModelAdmin):
+
+
+    list_display = (
+        'species',
+        'location',
+        'curator',
+        'sowing_date',
+        'planting_date',
+        'accession_no',
         'plot_no',
-        'plant_no',
-        'plant_breadth',
-        'petiole_length',
-        'leaf_blade_length',
-        'leaf_blade_width',
     )
 
-
 # Register your models here.
+admin.site.register(EggplantDataSheetDescription, EggplantDataSheetDescriptionAdmin)
 admin.site.register(EggplantDataSheet, EggplantDataSheetAdmin)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SweetPotatoDataSheet
+from .models import SweetPotatoDataSheet, SweetPotatoDataSheetDescription
 
 admin.site.site_header = 'Entomology Database'
 
@@ -8,7 +8,9 @@ class SweetPotatoDataSheetAdmin(admin.ModelAdmin):
     
     '''descriptor class for the SweetPotatoDataSheet Administration'''
 
-    list_filter = (
+class SweetPotatoDataSheetDescriptionAdmin(admin.ModelAdmin):
+
+    list_display = (
         'species',
         'location',
         'curator',
@@ -18,6 +20,6 @@ class SweetPotatoDataSheetAdmin(admin.ModelAdmin):
         'plot_no',
     )
 
-
 # Register your models here.
+admin.site.register(SweetPotatoDataSheetDescription, SweetPotatoDataSheetDescriptionAdmin)
 admin.site.register(SweetPotatoDataSheet, SweetPotatoDataSheetAdmin)
