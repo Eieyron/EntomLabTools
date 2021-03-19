@@ -10,15 +10,12 @@ class EggplantDataSheetAdmin(admin.ModelAdmin):
 
 class EggplantDataSheetDescriptionAdmin(admin.ModelAdmin):
 
-
     list_display = (
         'species',
         'location',
         'curator',
         'sowing_date',
         'planting_date',
-        'accession_no',
-        'plot_no',
     )
 
 # Register your models here.

@@ -8,8 +8,6 @@ class EggplantDataSheetDescription(models.Model):
     location = models.CharField(max_length=50) # STC
     planting_date = models.DateField(auto_now=False, auto_now_add=False)
     sowing_date = models.DateField(auto_now=False, auto_now_add=False)
-    accession_no = models.CharField(max_length=50)
-    plot_no = models.IntegerField()
     curator = models.CharField(max_length=255)
     
     def __str__(self):
@@ -20,6 +18,9 @@ class EggplantDataSheet(models.Model):
     description = models.ForeignKey(EggplantDataSheetDescription, on_delete=models.CASCADE)
 
     plant_no    = models.IntegerField()
+    accession_no = models.CharField(max_length=50)
+    plot_no = models.IntegerField()
+
     plant_height_at_flowering_stage = models.FloatField() # cm
     plant_breadth       = models.FloatField() # cm
     petiole_length      = models.FloatField() # cm

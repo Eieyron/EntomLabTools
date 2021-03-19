@@ -11,8 +11,6 @@ class SweetPotatoDataSheetDescription(models.Model):
     location = models.CharField(max_length=50) # STC
     planting_date = models.DateField(auto_now=False, auto_now_add=False)
     sowing_date = models.DateField(auto_now=False, auto_now_add=False)
-    accession_no = models.CharField(max_length=50)
-    plot_no = models.IntegerField()
     curator = models.CharField(max_length=255)
 
 class SweetPotatoDataSheet(models.Model):
@@ -20,6 +18,8 @@ class SweetPotatoDataSheet(models.Model):
     description = models.ForeignKey(SweetPotatoDataSheetDescription, on_delete=models.CASCADE)
 
     plant_no = models.IntegerField()
+    accession_no = models.CharField(max_length=50)
+    plot_no = models.IntegerField()
 
     # Plant Characteristics
     plant_growth_habit  = models.IntegerField() #3579

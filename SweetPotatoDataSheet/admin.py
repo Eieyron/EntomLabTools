@@ -8,6 +8,8 @@ class SweetPotatoDataSheetAdmin(admin.ModelAdmin):
     
     '''descriptor class for the SweetPotatoDataSheet Administration'''
 
+    list_display = [field.name for field in SweetPotatoDataSheet._meta.get_fields()]
+
 class SweetPotatoDataSheetDescriptionAdmin(admin.ModelAdmin):
 
     list_display = (
@@ -16,8 +18,6 @@ class SweetPotatoDataSheetDescriptionAdmin(admin.ModelAdmin):
         'curator',
         'sowing_date',
         'planting_date',
-        'accession_no',
-        'plot_no',
     )
 
 # Register your models here.
