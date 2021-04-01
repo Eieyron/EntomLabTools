@@ -39,6 +39,25 @@ def closing(image):
     kernel = np.ones((5,5),np.uint8)
     return cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
 
+# match the height/width to which dimension is bigger
+def square(image, dimension=28):
+
+    height, width = image.shape
+
+    if height > width:
+        padding = height - width
+        padding //= 2
+        image = pad(image, width_pad=padding)
+        image = square_resize_px(image, dimension)
+
+    elif width > height:
+        padding = width - height        
+        padding //= 2
+        image = pad(image, height_pad=padding)
+        image = square_resize_px(image, dimension)
+
+    return image
+
 #canny edge detection
 def canny(image):
     return cv2.Canny(image, 100, 200)

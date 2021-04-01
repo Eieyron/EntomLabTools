@@ -1,24 +1,49 @@
-import cv2 
-import pytesseract
-from headers import square_resize_px, pad, get_grayscale, thresholding, connected_components, resize, opening, closing
+from headers import square, pad, get_grayscale, thresholding, connected_components, resize, opening, closing
+from pyimagesearch.cnn.networks.lenet import LeNet
+from tensorflow.compat.v1.keras.optimizers import SGD
 
-img = cv2.imread('sample_number_read.png')
-test = img.copy()
+import os
+import numpy as np
+import cv2
 
+# Build Le Net Model
+weights = "./weights/lenet_weights.hdf5"
+
+# initialize the optimizer and model
+print("[INFO] compiling model...")
+opt = SGD(lr=0.01)
+model = LeNet.build(
+    numChannels=1, 
+    imgRows=28, 
+    imgCols=28,
+	numClasses=10,
+	weightsPath=weights)
+
+model.compile(
+    loss="categorical_crossentropy", 
+    optimizer=opt,
+	metrics=["accuracy"])
+
+# read sample image
+img = cv2.imread('handwritten_numbers.png')
 cv2.imshow('sample',img)
 
+# copy image for testing purposes
+test = img.copy()
+
+# grascale image
 gray = get_grayscale(img)
 cv2.imshow('gray',gray)
 
+# binarize image
 thresh = thresholding(gray, inv=1)
 cv2.imshow('thresh',thresh)
 
-thresh = opening(thresh)
+# remove unwanted 
+# thresh = opening(thresh)
 
+# get components connected
 (numLabels, labels, stats, centroids) = connected_components(thresh, connectivity=8)
-
-output = thresholding(gray)
-output = closing(output)
 
 components = []
 
@@ -35,57 +60,51 @@ for index, i in enumerate(range(0, numLabels)):
         h = stats[i, cv2.CC_STAT_HEIGHT]
         area = stats[i, cv2.CC_STAT_AREA]
         (cX, cY) = centroids[i]
-        # output = img.copy()
+
         test = cv2.rectangle(test, (x, y), (x + w, y + h), (0, 255, 0), 3)
         
         buffer = 10
-        cropped = output[y-buffer:y+h+buffer, x-buffer:x+w+buffer]
+        cropped = thresh[y-buffer:y+h+buffer, x-buffer:x+w+buffer]
 
-        height, width = cropped.shape
+        squared = square(cropped)
 
-        if height > width:
-            padding = height - width
-            padding //= 2
-            squared =  pad(cropped, width_pad=padding)
-            squared = square_resize_px(squared, 28)
+        squared = squared/255
 
+        # put greyscale values in third dimension
+        squared = np.atleast_3d(squared)
 
-        elif width > height:
-            padding = width - height        
-            padding //= 2
-            squared =  pad(cropped, height_pad=padding)
-            squared = square_resize_px(squared, 28)
+        print(squared.shape)
+
+        if not squared.shape == (28,28,1):
+            print("THERE IS A NOT SQUARE")
+            continue
 
         components.append(squared)
-        # cv2.imwrite("number"+str(index), )
 
-
-        cv2.imshow('cc',output)
+        # cv2.imshow('cc',thresh)
         
     print("[INFO] {}".format(text))
 
+print(len(components))
 cv2.imshow('bounded numbers',test)
 
-for ind, i in enumerate(components):
+# turn component list to np array that the model can read
+to_predict = np.array(components)
 
-    # resized = resize(i, scale_percent=60)
+print(to_predict.shape)
 
-    # cv2.imshow('cc resized'+str(ind), resized)
-    cv2.imshow('cc'+str(ind), i)
-    cv2.imwrite('./test/cc'+str(ind)+'.jpg', i)
+# probabilities
+probs = model.predict(to_predict)
 
-    custom_config = '--psm 10 --oem 1 -c tessedit_char_whitelist=0123456789'
-    x = pytesseract.image_to_string(i, config=custom_config)
+# get prediction array
+prediction = probs.argmax(axis=1)
 
-    print(str(ind),x)
+for ind, i in enumerate(prediction):
 
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    print('{} predicted: {}'.format(ind, i))
 
-custom_config = '--psm 7 --oem 3 -c tessedit_char_whitelist=0123456789'
-x = pytesseract.image_to_string(output, config=custom_config)
+    cv2.imshow("number", components[ind])
+    cv2.waitKey(0)
 
-print('as whole image: ', x)
-
-cv2.waitKey(0)
+# cv2.waitKey(0)
 cv2.destroyAllWindows()
