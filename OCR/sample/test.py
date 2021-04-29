@@ -25,7 +25,7 @@ model.compile(
 	metrics=["accuracy"])
 
 # read sample image
-img = cv2.imread('handwritten_numbers.png')
+img = cv2.imread('sample/handwritten_numbers.png')
 cv2.imshow('sample',img)
 
 # copy image for testing purposes

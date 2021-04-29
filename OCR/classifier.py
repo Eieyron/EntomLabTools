@@ -110,5 +110,8 @@ class LeNet_Classifier():
 
             image_predictions.append((i, components[ind]))
 
-        return image_predictions
+        return {
+            "predictions" : prediction,
+            "image_predictions" : image_predictions
+        }
 
