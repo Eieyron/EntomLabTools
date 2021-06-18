@@ -1,1 +1,35 @@
-{"page_header": "Sample form", "form_format": {"1": {"qheader": "question1", "qtype": 2}, "2": {"qheader": "question2", "qtype": 1, "choices": ["1", "2", "3", "4", "5", "6", "7"]}, "3": {"qheader": "question3", "qtype": 1, "choices": ["1", "2", "3"]}, "4": {"qheader": "question4", "qtype": 1, "choices": ["1", "2"]}}}
+{
+    "page_header": "sample questionnaire 2",
+    "page_date": "06/01/2021",
+    "form_format": {
+        "1": {
+            "qheader": "leafwidth",
+            "qtype": 2
+        },
+        "2": {
+            "qheader": "leafcolor",
+            "qtype": 1,
+            "choices": [
+                "red",
+                "violet",
+                "green",
+                "orange",
+                "blue",
+                "brown",
+                "white"
+            ]
+        },
+        "3": {
+            "qheader": "pltheight",
+            "qtype": 2
+        },
+        "4": {
+            "qheader": "lfprickle",
+            "qtype": 1,
+            "choices": [
+                "present",
+                "absent"
+            ]
+        }
+    }
+}

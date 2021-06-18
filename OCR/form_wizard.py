@@ -1,11 +1,16 @@
 import json
 
 page_header = input("Input Questionaire Title: \n>> ")
+page_date = input("Input Date (mm/dd/yyyy): \n>> ")
 
-no_of_questions = int(input("How many questions will you have?: \n>> "))
+no_of_questions = int(input("How many questions will you have? (max 10): \n>> "))
+while 1 > no_of_questions > 10:
+    no_of_questions = int(input("[ERROR] Max number of Questions reached. How many questions will you have? (max 10): \n>> "))
+
 
 page_format = {}
 page_format["page_header"] = page_header
+page_format["page_date"] = page_date
 form_format = {}
 
 for i in range(1, no_of_questions+1):

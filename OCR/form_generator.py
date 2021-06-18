@@ -11,6 +11,7 @@ with open("forms/sample.json","r") as json_obj:
     page_format = json.load(json_obj)
     
     page_header = page_format["page_header"]
+    page_date = page_format["page_date"]
     form_format = page_format["form_format"]
 
 print(page_header)
@@ -31,11 +32,17 @@ ws.page_setup.fitToWidth = 1
 ws.print_options.horizontalCentered = True
 ws.print_options.verticalCentered = True
 ws.oddHeader.left.text = page_header
+ws.oddHeader.right.text = page_date
 
 print(ws.HeaderFooter)
 
 for i in range(0,11):
     ws.column_dimensions[get_column_letter(i+1)].width = 11
+    # ws.column_dimensions[get_column_letter(i+1)].height = 22.5
+
+for i in range(0,21):
+    ws.row_dimensions[i+1].height = 22.5
+
 
 border = Border(left=Side(border_style=None,
                             color='000000',
@@ -50,7 +57,7 @@ border = Border(left=Side(border_style=None,
                             color='000000',
                             style='thin'))
 
-for column in ws['A1:K32']:
+for column in ws['A1:K21']:
     for cell in column:
         cell.border = border
 
@@ -61,7 +68,7 @@ for col in range(0,11):
     if col+1 > no_of_questions:
         break
 
-    for row in range(0, 32):
+    for row in range(0, 21):
 
         value = 'x'
 
