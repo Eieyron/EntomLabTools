@@ -4,17 +4,17 @@ import os
 import numpy as np
 import cv2
 
-def evaluate_multiple_choice(img, choices):
+def evaluate_multiple_choice(img, choices, verbose=False):
 
     # objdir = "contours3.png"
 
     # img = cv2.imread(objdir)
 
     imgray = grayscale(img)
-    cv2.imshow('sample',img)
+    if verbose: cv2.imshow('sample',img)
 
     thresh = thresholding(imgray, inv=1)
-    cv2.imshow('inverted binarized',thresh)
+    if verbose: cv2.imshow('inverted binarized',thresh)
 
     contours, hierarchy = findContours(thresh)
 
@@ -42,7 +42,7 @@ def evaluate_multiple_choice(img, choices):
 
     for key,val in child_matrix.items():
         
-        print(key,val)
+        # print(key,val)
 
         M = cv2.moments(contours[key])
         cx = int(M['m10']/M['m00'])

@@ -2,11 +2,15 @@ from headers import crop, grayscale, findContours, square, pad, get_grayscale, t
 from pdf2image import convert_from_path, convert_from_bytes
 
 import multiple_choice_evaluator
+import float_evaluator
 
 import cv2
 import numpy as np
 import json
+import csv
 
+
+verbose = False
 
 images = convert_from_path('forms/out/sample.pdf')
 
@@ -70,6 +74,7 @@ for cell in max_index_children:
             column = 11
 
 table = np.array(table)
+output_table = []
 
 with open("forms/sample.json","r") as json_obj:
     # print(json_obj)
@@ -78,6 +83,8 @@ with open("forms/sample.json","r") as json_obj:
     page_header = page_format["page_header"]
     page_date = page_format["page_date"]
     form_format = page_format["form_format"]
+
+fe = float_evaluator.Float_Evaluator()
 
 no_of_questions = len(form_format)
 
@@ -89,24 +96,65 @@ for index, column in enumerate(table):
     if index == no_of_questions:
         break
 
-    if form_format[str(index+1)]["qtype"] == 1:
+    format = form_format[str(index+1)]["qtype"]
+
+    output_table.append([])
+
     
-        for cell_index, cell in enumerate(column):
-            
-            x,y,w,h = cv2.boundingRect(cell)
+    for cell_index, cell in enumerate(column):
+        
+        x,y,w,h = cv2.boundingRect(cell)
 
-            cell_img = ref_img[y:y+h, x:x+w]
-            cv2.imshow("cell",cell_img)
+        cell_img = ref_img[y:y+h, x:x+w]
+        if verbose: cv2.imshow("cell",cell_img)
 
-            img = cv2.drawContours(img, [cell], -1, color_dict[index%3], 2)
+        img = cv2.drawContours(img, [cell], -1, color_dict[index%3], 2)
 
-            cv2.imshow("image",img)
-            # cv2.imwrite("contours"+str(cell_index)+".png",cell_img)
+        if verbose: cv2.imshow("image",img)
+        # cv2.imwrite("contours"+str(cell_index)+".png",cell_img)
 
-            print(multiple_choice_evaluator.evaluate_multiple_choice(cell_img,form_format[str(index+1)]["choices"]))
+        if format == 1: # multiple choice
 
+            cell_value = multiple_choice_evaluator.evaluate_multiple_choice(cell_img,form_format[str(index+1)]["choices"])
+            cell_value = cell_value["value"]
+
+        if format == 2: # float classification
+
+            cell_value = fe.classify(image=cell_img) 
+
+        print(cell_value)
+
+        output_table[index].append(cell_value)
+
+        if verbose:
             cv2.waitKey(0)
             cv2.destroyAllWindows()
+
+# print(output_table)
+
+index_table = [x for x in range(1, (len(output_table[0])+1))]
+index_table.insert(0,"Index")
+output_table.insert(0, index_table )
+
+# print(index_table)
+
+
+print(output_table)
+
+for index,col in enumerate(output_table):
+
+    if index > 0:
+
+        col.insert(0,form_format[str(index)]["qheader"])
+
+
+reshape = zip(*output_table)
+
+with open("forms/output.csv","w+") as my_csv:
+    csvWriter = csv.writer(my_csv,delimiter=',')
+    csvWriter.writerows(reshape)
+
+
 
 
 
